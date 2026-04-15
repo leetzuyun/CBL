@@ -1,0 +1,11 @@
+.venv/
+
+build/
+dist/
+*.spec
+
+__pycache__/
+*.pyc
+
+raw_data/
+CBL_Report.html
