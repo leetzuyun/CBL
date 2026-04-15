@@ -1,7 +1,9 @@
+import papermill as pm
+import os
 import tkinter as tk
 from tkinter import ttk, messagebox
 
-from lib import loan_data_processor, mt535_data_processor, plotting
+from lib import loan_data_processor, mt535_data_processor
 
 class DataPipelineApp:
     def __init__(self, root):
@@ -56,7 +58,7 @@ class DataPipelineApp:
         report_frame = tk.Frame(self.root)
         report_frame.pack(fill=tk.X, padx=10, pady=5)
 
-        self.btn_report = tk.Button(report_frame, text="Generate Loan Report", command=self.generate_report, font=("Arial", 12), bg="#C7C1B1", fg="white")
+        self.btn_report = tk.Button(report_frame, text="Generate Report", command=self.generate_report, font=("Arial", 12), bg="#C7C1B1", fg="white")
         self.btn_report.pack(side=tk.LEFT, padx=10)
 
     def display_dataframe(self, df):
@@ -141,18 +143,40 @@ class DataPipelineApp:
             messagebox.showerror("錯誤", f"上傳 MT535 時發生錯誤:\n{str(e)}")
             self.lbl_status.config(text="MT535 上傳失敗", fg="red")
 
+    # def generate_report(self):
+    #     self.lbl_status.config(text="報表產生中...", fg="blue")
+    #     self.root.update_idletasks()
+        
+    #     try:
+    #         plotting.generate_plots()
+    #         messagebox.showinfo("成功", "報表已成功產生！")
+    #         self.lbl_status.config(text="報表產生成功", fg="green")
+    #     except Exception as e:
+    #         messagebox.showerror("失敗", f"產生報表時發生錯誤：\n{str(e)}")
+    #         self.lbl_status.config(text="報表產生失敗", fg="red")
     def generate_report(self):
         self.lbl_status.config(text="報表產生中...", fg="blue")
         self.root.update_idletasks()
+        temp_dir = "temp"
+        input_nb = "plotting.ipynb"
+        debug_nb = 'temp/debug_plotting.ipynb' 
+        if not os.path.exists(temp_dir):
+            try:
+                os.makedirs(temp_dir, exist_ok=True)
+                # ctypes.windll.kernel32.SetFileAttributesW(temp_dir, 2) 
+            except Exception as e:
+                print(f"無法建立暫存資料夾: {e}")
         
         try:
-            plotting.generate_plots()
+            pm.execute_notebook(
+                input_nb,
+                debug_nb
+            )
             messagebox.showinfo("成功", "報表已成功產生！")
             self.lbl_status.config(text="報表產生成功", fg="green")
         except Exception as e:
-            messagebox.showerror("失敗", f"產生報表時發生錯誤：\n{str(e)}")
+            messagebox.showerror("失敗", f"產生報表時發生錯誤。\nDebug 檔案已存於：{debug_nb}\n\n錯誤訊息：{str(e)}")
             self.lbl_status.config(text="報表產生失敗", fg="red")
-
 
 if __name__ == "__main__":
     root = tk.Tk()

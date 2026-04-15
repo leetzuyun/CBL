@@ -1,4 +1,4 @@
-﻿from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup
 import pandas as pd
 from pathlib import Path
 from sqlalchemy import create_engine
