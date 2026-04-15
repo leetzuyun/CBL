@@ -166,7 +166,6 @@ class DataPipelineApp:
                 # ctypes.windll.kernel32.SetFileAttributesW(temp_dir, 2) 
             except Exception as e:
                 print(f"無法建立暫存資料夾: {e}")
-        
         try:
             pm.execute_notebook(
                 input_nb,
