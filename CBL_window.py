@@ -143,17 +143,6 @@ class DataPipelineApp:
             messagebox.showerror("錯誤", f"上傳 MT535 時發生錯誤:\n{str(e)}")
             self.lbl_status.config(text="MT535 上傳失敗", fg="red")
 
-    # def generate_report(self):
-    #     self.lbl_status.config(text="報表產生中...", fg="blue")
-    #     self.root.update_idletasks()
-        
-    #     try:
-    #         plotting.generate_plots()
-    #         messagebox.showinfo("成功", "報表已成功產生！")
-    #         self.lbl_status.config(text="報表產生成功", fg="green")
-    #     except Exception as e:
-    #         messagebox.showerror("失敗", f"產生報表時發生錯誤：\n{str(e)}")
-    #         self.lbl_status.config(text="報表產生失敗", fg="red")
     def generate_report(self):
         self.lbl_status.config(text="報表產生中...", fg="blue")
         self.root.update_idletasks()

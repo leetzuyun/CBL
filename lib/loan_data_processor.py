@@ -1,3 +1,4 @@
+import json
 import os
 import pandas as pd
 from pathlib import Path
@@ -128,14 +129,21 @@ def upload_to_sql(filtered_df, progress_callback=None):
     if filtered_df is None or filtered_df.empty:
         raise ValueError("沒有可上傳的資料")
 
-    params = urllib.parse.quote_plus(
-        "DRIVER={ODBC Driver 18 for SQL Server};"
-        "SERVER=128.110.24.133;"
-        "DATABASE=MIDOFFICE;"
-        "TrustServerCertificate=yes;"
-        "UID=fixuser;"
-        "PWD=7ujm4rfv;"
+    config_path = os.path.join(os.path.dirname(__file__), 'odbc_config.json')
+
+    with open(config_path, 'r', encoding='utf-8') as f:
+        config = json.load(f)
+    db = config['db_config']
+    conn_str = (
+        f"DRIVER={db['DRIVER']};"
+        f"SERVER={db['SERVER']};"
+        f"DATABASE={db['DATABASE']};"
+        f"TrustServerCertificate={db['TrustServerCertificate']};"
+        f"UID={db['UID']};"
+        f"PWD={db['PWD']};"
     )
+
+    params = urllib.parse.quote_plus(conn_str)
     
     engine = create_engine(f"mssql+pyodbc:///?odbc_connect={params}", fast_executemany=True)
     

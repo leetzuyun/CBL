@@ -11,3 +11,4 @@ raw_data/
 CBL_Report.html
 
 temp/
+lib/odbc_config.json

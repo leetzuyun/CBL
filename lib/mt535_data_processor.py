@@ -1,4 +1,7 @@
 # mt535_handler.py
+import json
+import os
+
 from bs4 import BeautifulSoup
 import pandas as pd
 from pathlib import Path
@@ -91,14 +94,19 @@ def upload_mt535_to_sql(df, progress_callback=None):
     if progress_callback:
         progress_callback("正在上傳 MT535 資料，請稍候...")
 
-    params = urllib.parse.quote_plus(
-        "DRIVER={ODBC Driver 18 for SQL Server};"
-        "SERVER=128.110.24.133;"
-        "DATABASE=MIDOFFICE;"
-        "TrustServerCertificate=yes;"
-        "UID=fixuser;"
-        "PWD=7ujm4rfv;"
+    config_path = os.path.join(os.path.dirname(__file__), 'odbc_config.json')
+    with open(config_path, 'r', encoding='utf-8') as f:
+        config = json.load(f)
+    db = config['db_config']
+    conn_str = (
+        f"DRIVER={db['DRIVER']};"
+        f"SERVER={db['SERVER']};"
+        f"DATABASE={db['DATABASE']};"
+        f"TrustServerCertificate={db['TrustServerCertificate']};"
+        f"UID={db['UID']};"
+        f"PWD={db['PWD']};"
     )
+    params = urllib.parse.quote_plus(conn_str)
     engine = create_engine(f"mssql+pyodbc:///?odbc_connect={params}")
 
     filtered_df = df.drop_duplicates(
